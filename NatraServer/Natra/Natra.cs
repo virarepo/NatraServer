@@ -9,12 +9,80 @@ namespace NatraServer.Natra
     public class Natra
     {
 
-        public void addSiparises(List<Siparis> siparises)
+        string depokodu = "00"; // ?
+        string dateString = DateTime.Now.ToString("yyyy-MM-dd"); // yyyy-mm-dd
+        string dateStringDetail = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"); // yyyy-mm-dd hh:mm:ss
+        string dateStringDetailMiliseconds = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"); // yyyy-mm-dd hh:mm:ss.mmm
+        string belgeSaati = DateTime.Now.ToString("HH:mm:ss.fff"); // hh:mm:ss.mmm
+
+        string hesapKodu;
+        string hesapAciklamasi;
+        SiparisTemp siparisTemp;
+
+        public void addSiparises(Siparis_h siparis_h, User user)
         {
-            checkStokAmounts(siparises);
+
+            hesapKodu = user.username;
+            hesapAciklamasi = user.username + " hesabi";
+
+            if (!checkStokAmounts(siparis_h.siparis_dList)) failAddSiparises();
+
+
+
+            siparisTemp = DBHelper.Instance.getSiparisData();
+
+            if (!(siparis_h.siparis_dList != null && siparis_h.siparis_dList[0] != null) || siparisData==null) failAddSiparises(); // siparises check first
+
+
+            Siparis_hWrapper siparis_hWrapper = new Siparis_hWrapper(siparis_h);
+
+            fillSiparis_hWrapperData(siparis_hWrapper);
+
         }
 
-        private bool checkStokAmounts(List<Siparis> siparises)
+
+        private void fillSiparis_hWrapperData(Siparis_hWrapper yeniSiparis)
+        {
+
+            yeniSiparis.EvrakNo = siparisTemp.EvrakNo;
+            yeniSiparis.BelgeNo = siparisTemp.BelgeNo;
+            yeniSiparis.YedekParcaToplam = yeniSiparis.GenelToplam;
+
+            yeniSiparis.TerminTarihi = dateString;
+            yeniSiparis.SiparisDurumu = "1";
+
+            //siparis_d
+
+            //siparis_h
+            yeniSiparis.BelgeTarihi = dateString;
+            yeniSiparis.Depokodu = depokodu;
+            yeniSiparis.VadeTarihi = dateString;
+            yeniSiparis.TeslimatTarihi = dateStringDetail;
+            yeniSiparis.HesapAciklamasi = hesapAciklamasi;
+            yeniSiparis.BelgeSaati = belgeSaati; //'10:47:38.257',
+            yeniSiparis.SevkTarihi = dateString;
+            yeniSiparis.USER = " "; // ???
+            yeniSiparis.RECDATE = dateStringDetailMiliseconds; // '2016-12-27 10:48:28.54
+                                                               //siparis_h
+
+        }
+
+        private void fillSiparis_dWrapperData(Siparis_dWrapper yeniSiparis)
+        {
+            yeniSiparis.YedekParcaToplam = yeniSiparis.BrutTutar;
+            yeniSiparis.EvrakNo = siparisTemp.EvrakNo;
+            yeniSiparis.TerminTarihi = dateString;
+            yeniSiparis.NetBirimFiyat = yeniSiparis.stok.SatisFiyati1;
+            yeniSiparis.SiparisDurumu = "1";
+            yeniSiparis.BirimFiyat = yeniSiparis.NetBirimFiyat;
+            yeniSiparis.BrutTutar = yeniSiparis.BirimFiyat * yeniSiparis.Miktar; // ?
+            yeniSiparis.NetTutar = yeniSiparis.BirimFiyat * yeniSiparis.Miktar;  // ?
+            yeniSiparis.Kalan =  yeniSiparis.Miktar;
+
+        }
+
+
+        private bool checkStokAmounts(List<Siparis_d> siparises)
         {
             Dictionary<string, int> stokAmounts = new Dictionary<string, int>();
 
@@ -40,16 +108,26 @@ namespace NatraServer.Natra
                 if (stokAmounts.ContainsKey(stok.StokKodu))
                 {
                     var sipMik = stokAmounts[stok.StokKodu];
-                    if (sipMik > stokMik) return false;
+                    if (sipMik > stokMik) return false;  
                 }
                 else
                 {
-                    //stok bulunamaması durumu halledilecek
+                    //stok kodu bulunamaması durumu halledilecek
                 }
                 
             }
 
             return true;
+
+        }
+
+        private void successAddSiparises()
+        {
+
+        }
+
+        private void failAddSiparises()
+        {
 
         }
 

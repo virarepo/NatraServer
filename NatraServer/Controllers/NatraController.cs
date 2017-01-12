@@ -44,12 +44,17 @@ namespace NatraServer.Controllers
 
         [System.Web.Http.HttpPost]
         [System.Web.Http.ActionName("sepetOnay")]
-        public string sepetOnay([FromBody] List<Siparis> siparises)
+        public string sepetOnay([FromBody] Siparis_h siparis_h)
         {
+            IEnumerable<string> headerValues;
+            var userData = string.Empty;
+            var keyFound = Request.Headers.TryGetValues("userData", out headerValues);
+            if (keyFound)
+            {
+                userData = headerValues.FirstOrDefault();
+            }
 
-            var natra = new Natra.Natra();
-
-            natra.addSiparises(siparises);
+            new Natra.Natra().addSiparises(siparis_h, JsonConvert.DeserializeObject<User>(userData));
             //return value+"donnnn";
             System.Threading.Thread.Sleep(2000); // test purposes will be removed
 

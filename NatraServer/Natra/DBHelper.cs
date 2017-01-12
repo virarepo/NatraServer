@@ -171,11 +171,13 @@ namespace NatraServer.Natra
             return new SiparisTemp() { EvrakNo = evraknoString, BelgeNo = (belgeNo + 1) };
         }
 
-        public void sendSiparis(Siparis_h siparis_h,List<Siparis_d> siparis_dList)
+        public void sendSiparis(Siparis_hWrapper siparis_h,User user)
         {
             if (connection == null) openConnection();
 
             MySqlCommand command = connection.CreateCommand();
+
+            List<Siparis_dWrapper> siparis_dList = siparis_h.siparis_dWrapperList;
 
             //string sqlInsertIntoHatakontrol= "insert into hatakontrol(EvrakNo, Tarih, Deger, USER) values(@EvrakNo, @Tarih, 1, @admin)";
 
@@ -228,7 +230,7 @@ namespace NatraServer.Natra
             //+ "VALUES (@EvrakNo, '@HesapKodu', 'A', 12, '2016-12-28', 'Açık', 'Hariç', '', 1, NULL, 'aç sekme 1', 'aç sekme 2', '', '', '', '', 330, 0, 0, 330, 0, 0, 0, 0, NULL, NULL, 'S', 330, 0, '00', '2016-12-28', NULL, 'Siparişiniz', '2016-12-28 00:00:00', '', 'alperen', '', '', '', '', '', '', 5, '', '', '0', '', 0, 0, '', '', '', '', '', '', NULL, NULL, NULL, NULL, '', '', 0, '', '14:06:29.476', 0, NULL, NULL, 0, 0, '2016-12-28', '', '', NULL, 'admin', NULL, NULL, '2016-12-28 14:07:12.701', NULL, NULL)";
 
             command.Parameters.Add(new MySqlParameter("EvrakNo", siparis_h.EvrakNo));
-            command.Parameters.Add(new MySqlParameter("HesapKodu", siparis_h.HesapKodu));
+            command.Parameters.Add(new MySqlParameter("HesapKodu", user.username));
             command.Parameters.Add(new MySqlParameter("Seri", "A"));
             command.Parameters.Add(new MySqlParameter("BelgeNo", siparis_h.BelgeNo));
             command.Parameters.Add(new MySqlParameter("BelgeTarihi", siparis_h.BelgeTarihi));
