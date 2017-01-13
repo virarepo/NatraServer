@@ -31,12 +31,14 @@ namespace NatraServer.Natra
 
             siparisTemp = DBHelper.Instance.getSiparisData();
 
-            if (!(siparis_h.siparis_dList != null && siparis_h.siparis_dList[0] != null) || siparisData==null) failAddSiparises(); // siparises check first
+            if (!(siparis_h.siparis_dList != null && siparis_h.siparis_dList[0] != null) || siparisTemp == null) failAddSiparises(); // siparises check first
 
 
             Siparis_hWrapper siparis_hWrapper = new Siparis_hWrapper(siparis_h);
 
             fillSiparis_hWrapperData(siparis_hWrapper);
+
+            DBHelper.Instance.sendSiparis(siparis_hWrapper,user);
 
         }
 
@@ -64,20 +66,28 @@ namespace NatraServer.Natra
             yeniSiparis.USER = " "; // ???
             yeniSiparis.RECDATE = dateStringDetailMiliseconds; // '2016-12-27 10:48:28.54
                                                                //siparis_h
+            foreach (Siparis_dWrapper var in yeniSiparis.siparis_dWrapperList)
+            {
+                fillSiparis_dWrapperData(var);
+            }
 
         }
 
         private void fillSiparis_dWrapperData(Siparis_dWrapper yeniSiparis)
         {
-            yeniSiparis.YedekParcaToplam = yeniSiparis.BrutTutar;
+            //yeniSiparis.YedekParcaToplam = yeniSiparis.BrutTutar;
             yeniSiparis.EvrakNo = siparisTemp.EvrakNo;
             yeniSiparis.TerminTarihi = dateString;
+            yeniSiparis.BelgeTarihi = dateString;
             yeniSiparis.NetBirimFiyat = yeniSiparis.stok.SatisFiyati1;
-            yeniSiparis.SiparisDurumu = "1";
-            yeniSiparis.BirimFiyat = yeniSiparis.NetBirimFiyat;
-            yeniSiparis.BrutTutar = yeniSiparis.BirimFiyat * yeniSiparis.Miktar; // ?
-            yeniSiparis.NetTutar = yeniSiparis.BirimFiyat * yeniSiparis.Miktar;  // ?
+            //yeniSiparis.SiparisDurumu = "1";
+            //yeniSiparis.BirimFiyat = yeniSiparis.BirimFiyat * yeniSiparis.BirimFiyat;
+            //yeniSiparis.BrutTutar = yeniSiparis.BirimFiyat * yeniSiparis.Miktar; // ?
+            yeniSiparis.NetTutar = yeniSiparis.BrutTutar;  // ?
             yeniSiparis.Kalan =  yeniSiparis.Miktar;
+
+            yeniSiparis.RECDATE = dateStringDetailMiliseconds;
+            yeniSiparis.USER = ""; // ?
 
         }
 

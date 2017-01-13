@@ -13,5 +13,6 @@ namespace NatraServer.Models
         public int Miktar { get; set; }
         public string HesapKodu { get; set; }
         public double BrutTutar { get; set; }
+        public double BirimFiyat { get; set; }
     }
 }

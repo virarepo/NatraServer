@@ -17,11 +17,11 @@ namespace NatraServer.Models
         public string Aciklama { get; set; }
 
 
-        public double BirimFiyat { get; set; }
-        public double NetTutar { get; set; }
-        public double NetBirimFiyat { get; set; }
+        //public double BirimFiyat { get; set; }
+        //public double NetTutar { get; set; }
+        //public double NetBirimFiyat { get; set; }
 
-        public int Kalan { get; set; }
+        //public int Kalan { get; set; }
         public int BelgeNo { get; set; }
 
         public string BelgeTarihi { get; set; }
@@ -34,6 +34,7 @@ namespace NatraServer.Models
         public string SevkTarihi { get; set; }
         public string USER { get; set; }
         public string RECDATE { get; set; } // '2016-12-27 10:48:28.54
+
         public double YedekParcaToplam { get; set; }
 
 
